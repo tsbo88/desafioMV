@@ -2,19 +2,48 @@ const express = require ('express');
 const router = express.Router();
 const Patient = require('../models/Patient');
 
-//Rotas para recuperar todos os pacientes
+/**
+ * @api {get} /patients/ Request Patient list
+ * @apiName GetPatient
+ * @apiGroup patients
+ *
+ * @apiSuccess {[Patient]} Patients list.
+ * 
+ */
 router.get('/', async (request, response) => {
     const patient = await Patient.find();
-    response.status(200).send(patient);
+
+    return response.status(200).send(patient);
 });
 
-//Rota para recuperar um paciente em específico
+/**
+ * @api {get} /patients/:id Request a Patient information
+ * @apiName GetSpecificPatient
+ * @apiGroup patients
+ 
+ * @apiParam {Number} id Patient unique ID.
+ *
+ * @apiSuccess {Patient} Patient data.
+ * 
+ */
 router.get('/:id', async (request, response) => {
     const patient = await Patient.findById(request.params.id);
-    response.status(200).send(patient);
+
+    return response.status(200).send(patient);
 });
 
-//Rota para criar os dados do paciente
+
+/**
+ * @api {post} /patients/ Create Patient Information
+ * @apiName PostPatient
+ * @apiGroup patients
+ * 
+ * @apiParam {String} name Patient name.
+ * @apiParam {Number} healthInsuranceCardId Patient health Insurance CardId.
+ * @apiParam {String} address Patient address. 
+ * 
+ * @apiSuccess {Patient} New Patient.
+ */
 router.post('/', async (request, response) => {
     
     const patient = await Patient.create({
@@ -22,12 +51,21 @@ router.post('/', async (request, response) => {
         healthInsuranceCardId: request.body.healthInsuranceCardId,
         address: request.body.address,
         createdAt: new Date().toLocaleDateString("en-US")
-    }); 
+    });
+
     return response.status(201).send(patient);
 
 });
 
-//Rota para atualizar os dados do paciente
+/**
+ * @api {put} /patients/:id Update Patient information
+ * @apiName PutPatient
+ * @apiGroup patients
+ *
+ * @apiParam {Number} id Users unique ID.
+ *
+ * @apiSuccess {Patient} Patient updated information.
+ */
 router.put('/:id', async (request, response) => {
     const patient = await Patient.findById(request.params.id);
     
@@ -35,16 +73,23 @@ router.put('/:id', async (request, response) => {
     patient.healthInsuranceCardId = request.body.healthInsuranceCardId
     patient.address = request.body.address
     const newPatient = await patient.save();
-    response.status(200).send(newPatient);
 
+    return response.status(200).send(newPatient);
 });
 
-//Rota para apagar os dados do paciente
+/**
+ * @api {delete} /patients/:id Delete Patient
+ * @apiName DeletePatient
+ * @apiGroup patients
+ *
+ * @apiParam {Number} id Users unique ID.
+ *
+ * @apiSuccess {void}
+ */
 router.delete('/:id', async (request, response) => {
     await Patient.findByIdAndDelete(request.params.id);
-    response.status(200).send();
 
+    return response.status(200).send();
 });
 
 module.exports = router;
-
