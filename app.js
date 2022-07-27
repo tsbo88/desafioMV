@@ -10,7 +10,7 @@ app.use(bodyParser.json());
 
 
 //Import Routes
-const patientRoute = require('../MV/routes/patients');
+const patientRoute = require('./routes/patients');
 const { parse } = require("path");
 app.use('/patients', patientRoute);
 
